@@ -124,4 +124,10 @@ for i in range(1,3):
     A_pow = A_pow.dot(A)
 print(eA_approx)
 
+print('\nqr decomposition')
+A = array([[20.0, -10.0, -13.0], [ 17.0, 16.0, -18.0], [0.7, -0.8, 0.9], [-1.0, -1.1, -1.2]])
+q, r = scipy.linalg.qr(A, mode='economic')
+pprint(A)
+pprint(r)
+
 # vim: set et ft=python fenc=utf-8 ff=unix sts=4 sw=4 ts=8 : 
