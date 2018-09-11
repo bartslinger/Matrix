@@ -120,7 +120,11 @@ public:
 //        printf("N: %zu;\n", size_t(N));
         for (size_t l = N; l > 0 ; l--) {
             size_t i = l - 1;
-            x(i) = qtbv(i) / _data[i][i];
+            x(i) = qtbv(i);
+            for (size_t r = i+1; r < N; r++) {
+                x(i) -= _data[i][r] * x(r);
+            }
+            x(i) = x(i) / _data[i][i];
         }
         return x;
     }
