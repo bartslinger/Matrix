@@ -124,10 +124,66 @@ for i in range(1,3):
     A_pow = A_pow.dot(A)
 print(eA_approx)
 
-print('\nqr decomposition')
+print('\nqr decomposition 4x3')
 A = array([[20.0, -10.0, -13.0], [ 17.0, 16.0, -18.0], [0.7, -0.8, 0.9], [-1.0, -1.1, -1.2]])
-q, r = scipy.linalg.qr(A, mode='economic')
+b = array([[2.], [3.], [4.], [5.]])
+print('A:')
 pprint(A)
+q, r = scipy.linalg.qr(A)
+# Third (last) value on diagonal of R is negated in implementation. So is the third column of Q is also negated, giving effectively the same A.
+print('Q:')
+pprint(q)
+print('R:')
+pprint(r)
+print('qtb:')
+pprint(q.transpose().dot(b))
+print('x:')
+pprint(scipy.linalg.lstsq(A,b)[0])
+
+print('\nqr decomposition 4x4')
+A = array([[20.0, -10.0, -13.0, 21.0], [ 17.0, 16.0, -18.0, -14], [0.7, -0.8, 0.9, -0.5], [-1.0, -1.1, -1.2, -1.3]])
+q, r = scipy.linalg.qr(A)
 pprint(r)
 
+def QTX(QR,tau,X):
+    qtx = X.copy()
+    M = shape(QR)[0]
+    N = shape(QR)[1]
+    for j in range(0,N):
+        w = QR[j:,j]
+        w[0] = 1.0
+        tmp = w.transpose().dot(qtx[j:])
+        tmp2 = tau[j]*w
+        qtx[j:] = qtx[j:] - outer(tmp2,tmp)
+    return qtx
+
+print('\nlooking for:')
+pprint(scipy.linalg.lstsq(A,b)[0])
+print('\nimplement qr decomposition:')
+M = shape(A)[0]
+N = shape(A)[1]
+tau = zeros((M,1))
+Q = eye(M)
+R = A.copy()
+for j in range(0,N):
+    normx = norm(A[j:,j])
+    s = -sign(A[j,j])
+    u1 = A[j,j] - s * normx
+    w = A[j:,j] / u1
+    w[0] = 1
+    tau[j] = -s*u1/normx
+
+    A[j+1:,j] = w[1:]
+    A[j,j] = s*normx
+    A[j:,j+1:] = A[j:,j+1:] - outer((tau[j]*w), w.transpose().dot(A[j:,j+1:]))
+
+print(A)
+
+#print(A)
+# Now QTB
+#qtb = QTX(A.copy(), tau, b)
+#print(qtb)
+#x = zeros((4,1))
+#x[3] = qtb[3] / A[3,3]
+#print(x)
 # vim: set et ft=python fenc=utf-8 ff=unix sts=4 sw=4 ts=8 : 
