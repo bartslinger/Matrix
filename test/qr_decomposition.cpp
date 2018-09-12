@@ -10,7 +10,6 @@ int main()
 {
     int ret;
 
-
     ret = test_4x4();
     if (ret != 0) return ret;
 
@@ -40,7 +39,6 @@ int test_4x3() {
 
     Vector<float, 3> x = qrd.solve(b);
     TEST(isEqual(x, x_check));
-
     return 0;
 }
 
@@ -62,7 +60,6 @@ int test_4x4() {
     Vector<float, 4> x_check(x_check_data);
 
     QRDecomposition<float, 4, 4> qrd = QRDecomposition<float, 4, 4>(A);
-
 
     Vector<float, 4> x = qrd.solve(b);
     TEST(isEqual(x, x_check));

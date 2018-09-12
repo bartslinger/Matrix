@@ -19,7 +19,14 @@ public:
 
     QRDecomposition() = default;
 
-    // Constructor from A matrix
+    /**
+     * @brief QRDecomposition which can be used for linear least squares
+     * @param A Matrix of size MxN
+     *
+     * Initialize the class with a MxN matrix. The constructor starts the
+     * QR decomposition. This class does not check the rank of the matrix.
+     * The user needs to make sure that rank(A) = N.
+     */
     QRDecomposition(Matrix<Type, M, N> A)
     {
         // Copy contentents of matrix A
@@ -33,6 +40,11 @@ public:
             normx = sqrt(normx);
             float s = _data[j][j] > 0 ? -1.0f : 1.0f;
             float u1 = _data[j][j] - s*normx;
+            // prevent divide by zero
+            // also covers u1. normx is never negative
+            if (normx < 1e-8f) {
+                return;
+            }
             float w[M] = {};
             w[0] = 1.0f;
             for (size_t i = j+1; i < M; i++) {
@@ -55,6 +67,14 @@ public:
         }
     }
 
+    /**
+     * @brief qtb Calculate Q^T * b
+     * @param b
+     * @return Q^T*b
+     *
+     * This function calculates Q^T * b. This is useful for the solver
+     * because R*x = Q^T*b.
+     */
     Vector<Type, M> qtb(Vector<Type, M> b) {
         Vector<Type, M> qtbv = b;
 
@@ -77,7 +97,14 @@ public:
         return qtbv;
     }
 
-    /* Find x for Ax = b */
+    /**
+     * @brief Solve Ax=b for x
+     * @param b
+     * @return Vector x
+     *
+     * Find x in the equation Ax = b.
+     * A is provided in the initializer of the class.
+     */
     Vector<Type, N> solve(Vector<Type, M> b) {
         Vector<Type, M> qtbv = qtb(b);
         Vector<Type, N> x;
@@ -88,23 +115,15 @@ public:
             for (size_t r = i+1; r < N; r++) {
                 x(i) -= _data[i][r] * x(r);
             }
+            // divide by zero, return vector of zeros
+            if (fabs(_data[i][i]) < 1e-8f) {
+                for (size_t z = 0; z < N; z++) {
+                    x(z) = 0.0f;
+                }
+            }
             x(i) = x(i) / _data[i][i];
         }
         return x;
-    }
-
-    Matrix<Type, N, N> getR() {
-        // super hacky right now, need to add another test first to cover other dimensions
-        Type r_data[N][N] = {};
-        for (size_t i = 0; i < N; i++) {
-            for (size_t j = i; j < N; j++) {
-                r_data[i][j] = _data[i][j];
-            }
-            r_data[i][i] = _tau[i];
-        }
-
-        Matrix<Type, N, N> R(_data);
-        return R;
     }
 
 private:
@@ -112,7 +131,6 @@ private:
     Type _tau[N] {};
 
 };
-
 
 } // namespace matrix
 
