@@ -41,53 +41,18 @@ public:
             }
             _data[j][j] = s*normx;
             _tau[j] = -s*u1/normx;
-            printf("tau: %1.7f\n", _tau[j]);
 
-            //printf("w: %1.3f %1.3f %1.3f %1.3f\n", w[0], w[1], w[2], w[3]);
-            //printf("diag: %1.7f\n", _data[j][j]);
             for (size_t k = j+1; k < N; k++) {
                 float tmp = 0.0f;
                 for (size_t i = j; i < M; i++) {
                     tmp += w[i-j] * _data[i][k];
                 }
-                printf("tmp: %1.7f\n", tmp);
                 for (size_t i = j; i < M; i++) {
                     _data[i][k] -= _tau[j] * w[i-j] * tmp;
-                    //if (i == 1 && j == 1) {
-                    //    printf("JAAA %1.7f\n", _tau[j] * w[i-j] * tmp);
-                    //}
                 }
             }
-            //printf("diag+1: %1.7f\n", _data[j+1][j+1]);
 
         }
-        /*
-        return;
-
-        for (size_t j = 0; j < N; j++) {
-            float s = 0.0f;
-            for (size_t i = j; i < M; i++) {
-                s += _data[i][j] * _data[i][j];
-            }
-            s = sqrt(s);
-            _tau[j] = _data[j][j] > 0 ? -s : s;
-            float fak = sqrt(s * (s + abs(_data[j][j])));
-            _data[j][j] -= _tau[j];
-            //printf("d[%zu] = %1.7f\n", j, _d[j]);
-            for (size_t k = j; k < M; k++) {
-                _data[k][j] /= fak;
-            }
-            for (size_t i = j+1; i < N; i++) {
-                s = 0.0f;
-                for (size_t k = j; k < M; k++) {
-                    s += _data[k][j] * _data[k][i];
-                }
-                for (size_t k = j; k < M; k++) {
-                    _data[k][i] -= _data[k][j] * s;
-                }
-            }
-        }
-        */
     }
 
     Vector<Type, M> qtb(Vector<Type, M> b) {
@@ -117,7 +82,6 @@ public:
         Vector<Type, M> qtbv = qtb(b);
         Vector<Type, N> x;
 
-//        printf("N: %zu;\n", size_t(N));
         for (size_t l = N; l > 0 ; l--) {
             size_t i = l - 1;
             x(i) = qtbv(i);
