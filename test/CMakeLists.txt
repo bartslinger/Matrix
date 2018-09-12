@@ -17,7 +17,7 @@ set(tests
     helper
     hatvee
     copyto
-    qr_decomposition
+    least_squares
     )
 
 add_custom_target(test_build)

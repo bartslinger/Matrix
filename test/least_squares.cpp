@@ -35,7 +35,7 @@ int test_4x3() {
                              -1.03767522f};
     Vector<float, 3> x_check(x_check_data);
 
-    QRDecomposition<float, 4, 3> qrd = QRDecomposition<float, 4, 3>(A);
+    LeastSquaresSolver<float, 4, 3> qrd = LeastSquaresSolver<float, 4, 3>(A);
 
     Vector<float, 3> x = qrd.solve(b);
     TEST(isEqual(x, x_check));
@@ -59,7 +59,7 @@ int test_4x4() {
                              -2.19387649f};
     Vector<float, 4> x_check(x_check_data);
 
-    QRDecomposition<float, 4, 4> qrd = QRDecomposition<float, 4, 4>(A);
+    LeastSquaresSolver<float, 4, 4> qrd = LeastSquaresSolver<float, 4, 4>(A);
 
     Vector<float, 4> x = qrd.solve(b);
     TEST(isEqual(x, x_check));

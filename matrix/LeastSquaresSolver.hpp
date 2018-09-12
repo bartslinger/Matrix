@@ -13,21 +13,22 @@
 namespace matrix {
 
 template<typename Type, size_t M, size_t N>
-class QRDecomposition
+class LeastSquaresSolver
 {
 public:
 
-    QRDecomposition() = default;
+    LeastSquaresSolver() = default;
 
     /**
-     * @brief QRDecomposition which can be used for linear least squares
+     * @brief Class calculates QR decomposition which can be used for linear
+     * least squares
      * @param A Matrix of size MxN
      *
      * Initialize the class with a MxN matrix. The constructor starts the
      * QR decomposition. This class does not check the rank of the matrix.
      * The user needs to make sure that rank(A) = N.
      */
-    QRDecomposition(Matrix<Type, M, N> A)
+    LeastSquaresSolver(Matrix<Type, M, N> A)
     {
         // Copy contentents of matrix A
         memcpy(_data, A._data, sizeof(_data));
